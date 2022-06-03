@@ -17,7 +17,11 @@ Install the dev requirements
 Create environment variables to store the DB connection information
 
 `export DB_NAME="<db_name>"` (default: pride_db)
+
 `export DB_HOST="<host>"` (default: localhost)
+
 `export DB_PORT="<port>"` (default: 5432)
+
 `export DB_USERNAME="<db_name>"` (default: postgres)
+
 `export DB_PASSWORD="<db_name>"` (default: password)
