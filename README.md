@@ -30,8 +30,8 @@ Create environment variables to store the DB connection information
 
 To start a Django-aware shell, run
 
-`python manage.py shell`
+`python manage.py shell` or `django-admin shell` (equivalent commands)
 
 To start the development server (default is http://127.0.0.1:8000/), run
 
-`python manage.py runserver` or `django-admin shell` (equivalent commands)
+`python manage.py runserver` or `django-admin runserver` (equivalent commands)
