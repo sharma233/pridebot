@@ -17,7 +17,7 @@ RAINBOW_BOUNDARIES = [
     ([120, 50, 20], [135, 255, 255]),  # violet/purple
 ]
 
-USERNAMES = ["exxonmobil", "RogersHelps", "Facebook", "fbsecurity"]
+USERNAMES = ["exxonmobil", "RogersHelps", "Facebook", "fbsecurity", "SEGA"]
 
 
 def check_image_contains_colours(image_path, colour_boundaries):
