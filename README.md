@@ -34,4 +34,4 @@ To start a Django-aware shell, run
 
 To start the development server (default is http://127.0.0.1:8000/), run
 
-`python manage.py runserver`
+`python manage.py runserver` or `django-admin shell` (equivalent commands)
