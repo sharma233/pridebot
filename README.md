@@ -25,3 +25,13 @@ Create environment variables to store the DB connection information
 `export DB_USERNAME="<db_name>"` (default: postgres)
 
 `export DB_PASSWORD="<db_name>"` (default: password)
+
+## Running the server
+
+To start a Django-aware shell, run
+
+`python manage.py shell`
+
+To start the development server (default is http://127.0.0.1:8000/), run
+
+`python manage.py runserver`
