@@ -86,12 +86,21 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "OPTIONS": {
-            "name": db_name,
+            # tromsky: Not entirely sure why, but both OPTIONS and root keys
+            #   for postgres are required
+            #   Migrations require root keys, but the ORM requires the
+            #   OPTIONS key with the db_name passed as "database"
+            "database": db_name,
             "user": db_username,
             "password": db_password,
             "host": db_host,
             "port": db_password,
         },
+        "NAME": db_name,
+        "USER": db_username,
+        "PASSWORD": db_password,
+        "HOST": db_host,
+        "PORT": db_port,
     }
 }
 
