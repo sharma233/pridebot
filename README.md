@@ -26,6 +26,8 @@ Create environment variables to store the DB connection information
 
 `export DB_PASSWORD="<db_name>"` (default: password)
 
+`export BEARER_TOKEN="<bearer_token>"` (contact sharma233 or tromsky if you need a token)
+
 ## Running the server
 
 To start a Django-aware shell, run
