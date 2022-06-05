@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from importlib.metadata import packages_distributions
 from urllib.request import urlopen
 
 import cv2
