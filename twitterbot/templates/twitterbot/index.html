@@ -1,0 +1,26 @@
+{% extends "twitterbot/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    {% for obj in profilepics %}
+        <div class="pridebox">
+            {% with obj.local_path as localpath %}
+            <img src="{% static localpath %}">
+            {% endwith %}
+            <br>
+            User: {{ obj.twitter_user.username }}
+            <br>
+            Pride icon:
+            {% with obj.has_rainbow as has_rainbow %}
+                {% if has_rainbow %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            {% endwith %}
+            <br>
+        </div>
+    {% endfor %}
+
+{% endblock %}

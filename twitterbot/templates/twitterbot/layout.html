@@ -1,0 +1,16 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="'en">
+    <head>
+        <title>{% block title %}Pridebot{% endblock %}</title>
+        <link href="{% static 'twitterbot/styles.css' %}" rel="stylesheet">
+        </head>
+    </head>
+    <body>
+        {% block body %}
+        {% endblock %}
+
+        <script src="{% static 'twitterbot/pride.js' %}"></script>
+    </body>
+</html>
