@@ -1,13 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    //let searchBox = document.querySelector('#searchbox');
-    let searchButton = document.querySelector("#searchbutton");
-    //console.log(searchBox);
-    //console.log(searchButton);
-    let prideBoxList = document.querySelectorAll('.pridebox');
+    let searchBox = document.querySelector('#searchbox');
+    searchBox.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById('searchbutton').click();
+        }
+    })
 
+    let searchButton = document.querySelector("#searchbutton");
     searchButton.addEventListener('click', searchHandler);
 
+    let prideBoxList = document.querySelectorAll('.pridebox');
     for (let i = 0; i < prideBoxList.length; i++) {
         prideBoxList[i].style.border = 'thin solid black';
         prideBoxList[i].style.padding = '5px';
@@ -26,22 +29,22 @@ function linkHandler(element) {
 }
 
 function searchHandler(element) {
-    let searchBox = document.querySelector('#searchbox')
-    console.log(element.target);
-    console.log(searchBox.value);
+    let searchBox = document.querySelector('#searchbox');
+    let searchBoxValue = (searchBox.value).toLowerCase();
+    let regex = `.*${searchBoxValue}.*`;
 
     let prideBoxList = document.querySelectorAll('.pridebox');
     for ( let i = 0; i < prideBoxList.length; i++) {
         let prideBoxTwitname = prideBoxList[i].querySelector('.twittername');
-        let parent = prideBoxList[i];
-        console.log(prideBoxTwitname.parentElement);
+        let twitName = prideBoxTwitname.innerText.toLowerCase();
 
-        if ((searchBox.value).toLowerCase() === (prideBoxTwitname.innerText).toLowerCase()) {
-            parent.style.display = 'block';
+        if (twitName.match(regex)) {
+            prideBoxList[i].style.display = 'block';
         } else if (searchBox.value === '') {
-            parent.style.display = 'block';
+            prideBoxList[i].style.display = 'block';
         } else {
-            parent.style.display = 'none';
+            console.log('nothing found');
+            prideBoxList[i].style.display = 'none';
         }
     }
 }
