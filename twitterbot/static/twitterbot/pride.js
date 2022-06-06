@@ -16,6 +16,19 @@ document.addEventListener('DOMContentLoaded', function() {
         prideBoxList[i].style.padding = '5px';
         prideBoxList[i].style.margin = '10px';
 
+        prideBoxList[i].addEventListener('click', function(element) {
+            let prideBoxUser = element.target.querySelector('.twittername').innerText;
+            let newWindow = window.open(`/profile/${prideBoxUser}`, '_self');
+        });
+
+        prideBoxList[i].addEventListener('mouseover', function() {
+            prideBoxList[i].style.backgroundColor = 'lightgrey';
+        })
+
+        prideBoxList[i].addEventListener('mouseout', function() {
+            prideBoxList[i].style.backgroundColor = 'white';
+        })
+
         let profileButton = prideBoxList[i].querySelector('.profilebutton');
         profileButton.addEventListener('click', linkHandler.bind(this));
     }

@@ -3,14 +3,16 @@
 
 {% block body %}
 
-<input type="text" id="searchbox" placeholder="Submit empty to show all users"><button id="searchbutton">Search for user</button><br>
+{% with profilepics.0 as profilepic %}
+    <button class="profilebutton">Go to profile</button>
+    <button class="indexbutton">Go back to index</button>
+{% endwith %}
 
     {% for obj in profilepics %}
         <div class="pridebox">
             {% with obj.local_path as localpath %}
-            <img src="{% static localpath %}">
+                <img src="{% static localpath %}">
             {% endwith %}
-            <button class="profilebutton">Go to profile</button>
             <br>
             User: <span class='twittername'>{{ obj.twitter_user.username }}</span>
             <br>
@@ -23,7 +25,8 @@
                 {% endif %}
             {% endwith %}
             <br>
+            Scraped on: {{ obj.created_at }}
         </div>
     {% endfor %}
-    <script src="{% static 'twitterbot/pride.js' %}"></script>
+    <script src="{% static 'twitterbot/pride-drilldown.js' %}"></script>
 {% endblock %}

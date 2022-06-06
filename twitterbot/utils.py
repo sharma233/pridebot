@@ -8,7 +8,7 @@ import numpy as np
 import requests
 import tweepy
 
-from .models import TwitterProfilePic, TwitterUser
+from twitterbot.models import TwitterProfilePic, TwitterUser
 
 RAINBOW_BOUNDARIES = [
     ([175, 50, 20], [180, 255, 255]),  # red
@@ -19,7 +19,7 @@ RAINBOW_BOUNDARIES = [
     ([120, 50, 20], [135, 255, 255]),  # violet/purple
 ]
 
-USERNAMES = ["exxonmobil", "RogersHelps", "Facebook", "fbsecurity", "SEGA", "sonic_hedgehog", "Xbox", "Microsoft", "Google"]
+USERNAMES = ["exxonmobil", "RogersHelps", "Facebook", "fbsecurity", "SEGA", "sonic_hedgehog", "Xbox", "Microsoft", "Google", "prideuser"]
 
 
 def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
