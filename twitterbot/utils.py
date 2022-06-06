@@ -1,13 +1,14 @@
 import os
 from datetime import datetime
 from urllib.request import urlopen
+from django.core.exceptions import ObjectDoesNotExist
 
 import cv2
 import numpy as np
 import requests
 import tweepy
 
-from twitterbot.models import TwitterProfilePic, TwitterUser
+from .models import TwitterProfilePic, TwitterUser
 
 RAINBOW_BOUNDARIES = [
     ([175, 50, 20], [180, 255, 255]),  # red
@@ -18,7 +19,7 @@ RAINBOW_BOUNDARIES = [
     ([120, 50, 20], [135, 255, 255]),  # violet/purple
 ]
 
-USERNAMES = ["exxonmobil", "RogersHelps", "Facebook", "fbsecurity", "SEGA"]
+USERNAMES = ["exxonmobil", "RogersHelps", "Facebook", "fbsecurity", "SEGA", "sonic_hedgehog", "Xbox", "Microsoft", "Google"]
 
 
 def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
@@ -128,14 +129,18 @@ def image_already_latest(username, profile_pic_url):
     """
 
     # before the image gets stored, check if the image is already stored
-    last_scraped_path = get_current_stored_profile_pic(username)
+    try:
+        last_scraped_path = get_current_stored_profile_pic(username)
 
-    last_image = get_image(last_scraped_path)
-    current_image = url_to_image(profile_pic_url)
+        last_image = get_image(last_scraped_path)
+        current_image = url_to_image(profile_pic_url)
 
-    images_are_the_same = equate_images(current_image, last_image)
+        images_are_the_same = equate_images(current_image, last_image)
 
-    return images_are_the_same
+        return images_are_the_same
+    except ObjectDoesNotExist:
+        print(f"{username} hasn't been scraped yet! Scraping now.")
+        return False
 
 
 def scrape_profile_pics():
@@ -143,6 +148,8 @@ def scrape_profile_pics():
     bearer_token = os.environ.get("BEARER_TOKEN")
     client = tweepy.Client(bearer_token)
 
+
+    print(USERNAMES)
     for username in USERNAMES:
         user = client.get_user(username=username, user_fields="profile_image_url")
         profile_pic_url = user[0].data["profile_image_url"]
@@ -154,7 +161,11 @@ def scrape_profile_pics():
         # if the current profile pic from twitter matches the most recent one
         # for the user stored in pridebot, don't store it
         if image_already_latest(username, profile_pic_url):
-            return
+            print(f'not storing {username}')
+            #return
+            continue
+        else:
+            print(f'storing {username}')
 
         # write the profile pic
         with open(profile_pic_path, "wb") as f:
