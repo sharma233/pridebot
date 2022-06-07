@@ -8,6 +8,7 @@ import requests
 import tweepy
 from django.core.exceptions import ObjectDoesNotExist
 
+
 from .models import TwitterProfilePic, TwitterUser, TwitterUserCurrentProfilePic
 
 RAINBOW_BOUNDARIES = [
@@ -19,6 +20,7 @@ RAINBOW_BOUNDARIES = [
     ([120, 50, 20], [135, 255, 255]),  # violet/purple
 ]
 
+
 USERNAMES = [
     "exxonmobil",
     "RogersHelps",
@@ -29,7 +31,9 @@ USERNAMES = [
     "Xbox",
     "Microsoft",
     "Google",
+    "prideuser"
 ]
+
 
 
 def url_to_image(url, readFlag=cv2.IMREAD_COLOR):

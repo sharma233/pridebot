@@ -59,3 +59,4 @@ class TwitterUserCurrentProfilePic(models.Model):
     current_profile_pic = models.ForeignKey(
         TwitterProfilePic, on_delete=models.CASCADE, null=True
     )
+

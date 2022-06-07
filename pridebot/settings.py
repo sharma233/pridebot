@@ -65,6 +65,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'django.template.context_processors.media'
             ],
         },
     },
@@ -94,7 +95,7 @@ DATABASES = {
             "user": db_username,
             "password": db_password,
             "host": db_host,
-            "port": db_password,
+            "port": db_port,
         },
         "NAME": db_name,
         "USER": db_username,
@@ -145,3 +146,8 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#Evalentine: Adding profile_pics url path
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'profile_pics')
+MEDIA_URL = '/profile_pics/'
