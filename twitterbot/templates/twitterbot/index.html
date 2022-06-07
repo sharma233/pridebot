@@ -3,13 +3,16 @@
 
 {% block body %}
 
+<input type="text" id="searchbox" placeholder="Submit empty to show all users"><button id="searchbutton">Search for user</button><br>
+
     {% for obj in profilepics %}
         <div class="pridebox">
             {% with obj.local_path as localpath %}
             <img src="{% static localpath %}">
             {% endwith %}
+            <button class="profilebutton">Go to profile</button>
             <br>
-            User: {{ obj.twitter_user.username }}
+            User: <span class='twittername'>{{ obj.twitter_user.username }}</span>
             <br>
             Pride icon:
             {% with obj.has_rainbow as has_rainbow %}
