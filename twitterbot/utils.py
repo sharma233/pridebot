@@ -200,9 +200,3 @@ def scrape_profile_pics():
             local_path=profile_pic_path,
             has_rainbow=has_rainbow,
         )
-
-        # current_profile_pic, _ = TwitterUserCurrentProfilePic.objects.get_or_create(
-        #     twitter_user=user
-        # )
-        # current_profile_pic.current_profile_pic = profile_pic
-        # current_profile_pic.save()
