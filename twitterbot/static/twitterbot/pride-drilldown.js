@@ -29,11 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function linkHandler(element) {
-    //console.log('div was clicked!');
-    //let twitname = document.querySelector('.twittername');
-    //console.log(twitname.innerText);
-    //console.log(element.target.className);
-    //let myWindow = window.open(`http://twitter.com/${twitname.innerText}`);
 
     let buttonClass = element.target.className;
     if (buttonClass === "profilebutton") {
