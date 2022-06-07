@@ -15,14 +15,20 @@ class TwitterUser(models.Model):
         if current_profile_pic:
             return current_profile_pic
 
+        # if the user has a profile pic but no record in TwitterUserCurrentProfilePic
         current_profile_pic = TwitterProfilePic.objects.filter(
             twitter_user=self
         ).order_by("-created_at")[0]
 
         if current_profile_pic:
+            # create the entry for the next lookup
+            TwitterUserCurrentProfilePic.objects.create(
+                twitter_user=self, current_profile_pic=current_profile_pic
+            )
+
             return current_profile_pic
 
-        print(f"No profile pics for user @{self.username}")
+        # No profile pics found for the user
         return None
 
     username = models.CharField(max_length=200)
