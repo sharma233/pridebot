@@ -46,27 +46,6 @@ def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
     return image
 
 
-def get_current_stored_profile_pic(twitter_username):
-    """
-    For a given Twitter user, get the most recent profile pic
-    stored in pridebot
-    """
-
-    # TODO tromsky: This will likely change once image storage
-    #   is sorted out, but for now this will return the
-    #   the path of the image
-
-    user = TwitterUser.objects.get(username=twitter_username)
-    try:
-        return (
-            TwitterProfilePic.objects.filter(twitter_user_id=user.id)
-            .order_by("-created_at")[0]
-            .local_path
-        )
-    except IndexError:
-        return None
-
-
 def get_image(image_path):
     """
     Given an image path, return the image as an opencv object
@@ -143,7 +122,9 @@ def image_already_latest(username, profile_pic_url):
 
     # before the image gets stored, check if the image is already stored
     try:
-        last_scraped_path = get_current_stored_profile_pic(username)
+        last_scraped_path = TwitterUser.objects.get(
+            username=username
+        ).current_profile_pic.local_path
 
         last_image = get_image(last_scraped_path)
         current_image = url_to_image(profile_pic_url)
