@@ -47,7 +47,7 @@ function searchHandler(element) {
     let regex = `.*${searchBoxValue}.*`;
 
     let prideBoxList = document.querySelectorAll('.pridebox');
-    for ( let i = 0; i < prideBoxList.length; i++) {
+    for (let i = 0; i < prideBoxList.length; i++) {
         let prideBoxTwitname = prideBoxList[i].querySelector('.twittername');
         let twitName = prideBoxTwitname.innerText.toLowerCase();
 
