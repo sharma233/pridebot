@@ -1,4 +1,5 @@
 import os
+import profile
 from datetime import datetime
 from urllib.request import urlopen
 
@@ -6,8 +7,9 @@ import cv2
 import numpy as np
 import requests
 import tweepy
+from django.core import files
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.core.files.temp import NamedTemporaryFile
 
 from .models import TwitterProfilePic, TwitterUser, TwitterUserCurrentProfilePic
 
@@ -20,7 +22,6 @@ RAINBOW_BOUNDARIES = [
     ([120, 50, 20], [135, 255, 255]),  # violet/purple
 ]
 
-
 USERNAMES = [
     "exxonmobil",
     "RogersHelps",
@@ -31,9 +32,8 @@ USERNAMES = [
     "Xbox",
     "Microsoft",
     "Google",
-    "prideuser"
+    "prideuser",
 ]
-
 
 
 def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
@@ -156,12 +156,8 @@ def scrape_profile_pics():
         user = client.get_user(username=username, user_fields="profile_image_url")
         profile_pic_url = user[0].data["profile_image_url"]
         profile_pic = requests.get(profile_pic_url)
-        profile_pic_path = (
-            f"twitterbot/profile_pics/{username}_pp_{datetime.utcnow().isoformat()}.png"
-        )
+        profile_pic_name = f"{username}_pp_{datetime.utcnow().isoformat()}.png"
 
-        # if the current profile pic from twitter matches the most recent one
-        # for the user stored in pridebot, don't store it
         if image_already_latest(username, profile_pic_url):
             print(f"not storing {username}")
             # return
@@ -170,18 +166,20 @@ def scrape_profile_pics():
             print(f"storing {username}")
 
         # write the profile pic
-        with open(profile_pic_path, "wb") as f:
-            f.write(profile_pic.content)
+        img_tmp = NamedTemporaryFile(delete=True)
+        img_tmp.write(profile_pic.content)
 
-        has_rainbow = check_image_contains_colours(profile_pic_path, RAINBOW_BOUNDARIES)
-        print(f"{username}'s profile pic likely contains rainbow: {has_rainbow}")
+        # TODO: Need to figure out how to open this file when we don't save it locally. CV2 fails to open the temp path
+        # has_rainbow = check_image_contains_colours(img_tmp.name, RAINBOW_BOUNDARIES)
+        # print(f"{username}'s profile pic likely contains rainbow: {has_rainbow}")
 
         # store in db
         user, _ = TwitterUser.objects.get_or_create(username=username)
-
-        profile_pic = TwitterProfilePic.objects.create(
+        img_file = files.File(img_tmp, name=profile_pic_name)
+        TwitterProfilePic.objects.create(
             twitter_user=user,
             url=profile_pic_url,
-            local_path=profile_pic_path,
-            has_rainbow=has_rainbow,
+            image=img_file
+            # TODO: Uncomment this after figuring out the has_rainbow above!
+            # has_rainbow=has_rainbow,
         )
