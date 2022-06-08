@@ -58,6 +58,11 @@ def get_image(image_path):
     return cv2.imdecode(image, cv2.IMREAD_COLOR)
 
 
+def get_image_from_byte_array(bytes):
+    image = np.asarray(bytearray(bytes), dtype="uint8")
+    return cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+
 def equate_images(first_image, second_image):
     """
     Given two image paths, compare the images to see if they are the
@@ -82,9 +87,9 @@ def equate_images(first_image, second_image):
     return True
 
 
-def check_image_contains_colours(image_path, colour_boundaries):
+def check_image_contains_colours(byte_array, colour_boundaries):
     """
-    Given an image path, check to see if the image likely contains
+    Given a byte array, check to see if the image likely contains
     anything like a rainbow by checking for existance of ROYGBV
     pixels.
 
@@ -93,7 +98,7 @@ def check_image_contains_colours(image_path, colour_boundaries):
 
     # set a control flag and load the image
     image_contains_colours = False
-    image = cv2.imread(image_path)
+    image = get_image_from_byte_array(byte_array)
 
     # loop over the colour boundaries
     for (lower, upper) in colour_boundaries:
@@ -169,9 +174,10 @@ def scrape_profile_pics():
         img_tmp = NamedTemporaryFile(delete=True)
         img_tmp.write(profile_pic.content)
 
-        # TODO: Need to figure out how to open this file when we don't save it locally. CV2 fails to open the temp path
-        # has_rainbow = check_image_contains_colours(img_tmp.name, RAINBOW_BOUNDARIES)
-        # print(f"{username}'s profile pic likely contains rainbow: {has_rainbow}")
+        has_rainbow = check_image_contains_colours(
+            profile_pic.content, RAINBOW_BOUNDARIES
+        )
+        print(f"{username}'s profile pic likely contains rainbow: {has_rainbow}")
 
         # store in db
         user, _ = TwitterUser.objects.get_or_create(username=username)
@@ -179,7 +185,6 @@ def scrape_profile_pics():
         TwitterProfilePic.objects.create(
             twitter_user=user,
             url=profile_pic_url,
-            image=img_file
-            # TODO: Uncomment this after figuring out the has_rainbow above!
-            # has_rainbow=has_rainbow,
+            image=img_file,
+            has_rainbow=has_rainbow,
         )
