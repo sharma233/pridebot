@@ -49,7 +49,7 @@ class TwitterProfilePic(models.Model):
 
     twitter_user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
     url = models.TextField()
-    local_path = models.TextField()
+    image = models.ImageField(default=None, null=True, upload_to="profile_pictures")
     has_rainbow = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -59,4 +59,3 @@ class TwitterUserCurrentProfilePic(models.Model):
     current_profile_pic = models.ForeignKey(
         TwitterProfilePic, on_delete=models.CASCADE, null=True
     )
-

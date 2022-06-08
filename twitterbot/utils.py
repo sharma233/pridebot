@@ -1,4 +1,5 @@
 import os
+import profile
 from datetime import datetime
 from urllib.request import urlopen
 
@@ -6,8 +7,9 @@ import cv2
 import numpy as np
 import requests
 import tweepy
+from django.core import files
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.core.files.temp import NamedTemporaryFile
 
 from .models import TwitterProfilePic, TwitterUser, TwitterUserCurrentProfilePic
 
@@ -20,7 +22,6 @@ RAINBOW_BOUNDARIES = [
     ([120, 50, 20], [135, 255, 255]),  # violet/purple
 ]
 
-
 USERNAMES = [
     "exxonmobil",
     "RogersHelps",
@@ -31,9 +32,8 @@ USERNAMES = [
     "Xbox",
     "Microsoft",
     "Google",
-    "prideuser"
+    "prideuser",
 ]
-
 
 
 def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
@@ -50,12 +50,17 @@ def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
     return image
 
 
-def get_image(image_path):
+def get_image(image_field):
     """
-    Given an image path, return the image as an opencv object
+    Given a Django image field, return the image as an opencv object
     """
+    image = np.asarray(bytearray(image_field.read()), dtype="uint8")
+    return cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-    return cv2.imread(image_path)
+
+def get_image_from_byte_array(bytes):
+    image = np.asarray(bytearray(bytes), dtype="uint8")
+    return cv2.imdecode(image, cv2.IMREAD_COLOR)
 
 
 def equate_images(first_image, second_image):
@@ -82,9 +87,9 @@ def equate_images(first_image, second_image):
     return True
 
 
-def check_image_contains_colours(image_path, colour_boundaries):
+def check_image_contains_colours(byte_array, colour_boundaries):
     """
-    Given an image path, check to see if the image likely contains
+    Given a byte array, check to see if the image likely contains
     anything like a rainbow by checking for existance of ROYGBV
     pixels.
 
@@ -93,7 +98,7 @@ def check_image_contains_colours(image_path, colour_boundaries):
 
     # set a control flag and load the image
     image_contains_colours = False
-    image = cv2.imread(image_path)
+    image = get_image_from_byte_array(byte_array)
 
     # loop over the colour boundaries
     for (lower, upper) in colour_boundaries:
@@ -128,7 +133,7 @@ def image_already_latest(username, profile_pic_url):
     try:
         last_scraped_path = TwitterUser.objects.get(
             username=username
-        ).current_profile_pic.local_path
+        ).current_profile_pic.image
 
         last_image = get_image(last_scraped_path)
         current_image = url_to_image(profile_pic_url)
@@ -156,12 +161,8 @@ def scrape_profile_pics():
         user = client.get_user(username=username, user_fields="profile_image_url")
         profile_pic_url = user[0].data["profile_image_url"]
         profile_pic = requests.get(profile_pic_url)
-        profile_pic_path = (
-            f"twitterbot/profile_pics/{username}_pp_{datetime.utcnow().isoformat()}.png"
-        )
+        profile_pic_name = f"{username}_pp_{datetime.utcnow().isoformat()}.png"
 
-        # if the current profile pic from twitter matches the most recent one
-        # for the user stored in pridebot, don't store it
         if image_already_latest(username, profile_pic_url):
             print(f"not storing {username}")
             # return
@@ -170,18 +171,20 @@ def scrape_profile_pics():
             print(f"storing {username}")
 
         # write the profile pic
-        with open(profile_pic_path, "wb") as f:
-            f.write(profile_pic.content)
+        img_tmp = NamedTemporaryFile(delete=True)
+        img_tmp.write(profile_pic.content)
 
-        has_rainbow = check_image_contains_colours(profile_pic_path, RAINBOW_BOUNDARIES)
+        has_rainbow = check_image_contains_colours(
+            profile_pic.content, RAINBOW_BOUNDARIES
+        )
         print(f"{username}'s profile pic likely contains rainbow: {has_rainbow}")
 
         # store in db
         user, _ = TwitterUser.objects.get_or_create(username=username)
-
-        profile_pic = TwitterProfilePic.objects.create(
+        img_file = files.File(img_tmp, name=profile_pic_name)
+        TwitterProfilePic.objects.create(
             twitter_user=user,
             url=profile_pic_url,
-            local_path=profile_pic_path,
+            image=img_file,
             has_rainbow=has_rainbow,
         )
