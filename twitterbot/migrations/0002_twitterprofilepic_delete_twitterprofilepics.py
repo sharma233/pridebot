@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("url", models.TextField()),
-                ("image", models.ImageField()),
+                ("local_path", models.TextField()),
                 ("has_rainbow", models.BooleanField(default=False)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 (
