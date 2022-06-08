@@ -50,7 +50,7 @@ def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
     return image
 
 
-def get_image(image_path):
+def get_image(image_field):
     """
     Given a Django image field, return the image as an opencv object
     """
