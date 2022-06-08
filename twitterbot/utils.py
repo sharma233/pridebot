@@ -52,10 +52,10 @@ def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
 
 def get_image(image_path):
     """
-    Given an image path, return the image as an opencv object
+    Given a Django image field, return the image as an opencv object
     """
-
-    return cv2.imread(image_path)
+    image = np.asarray(bytearray(image_field.read()), dtype="uint8")
+    return cv2.imdecode(image, cv2.IMREAD_COLOR)
 
 
 def equate_images(first_image, second_image):
@@ -128,7 +128,7 @@ def image_already_latest(username, profile_pic_url):
     try:
         last_scraped_path = TwitterUser.objects.get(
             username=username
-        ).current_profile_pic.local_path
+        ).current_profile_pic.image
 
         last_image = get_image(last_scraped_path)
         current_image = url_to_image(profile_pic_url)
