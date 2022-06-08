@@ -1,29 +1,30 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from .models import TwitterUser, TwitterProfilePic
+from .models import TwitterUser, TwitterUserCurrentProfilePic
 
 
 def index(request):
-    profilePics = TwitterProfilePic.objects.all().order_by('-created_at')
-    seenUser = set()
-    keepPic = []
-    for pic in profilePics:
-        print(pic)
-        if pic.twitter_user.id not in seenUser:
-            keepPic.append(pic.id)
-            seenUser.add(pic.twitter_user.id)
+    """
+    List of all scraped TWitter users with current porfile pic
+    """
 
-    profilePics_noDupes = TwitterProfilePic.objects.filter(id__in=keepPic)
-    print(profilePics_noDupes)
+    current_profile_pics = TwitterUserCurrentProfilePic.objects.all()
 
-    return render(request, "twitterbot/index.html", {
-        'profilepics': profilePics_noDupes
-    })
+    return render(
+        request, "twitterbot/index.html", {"profilepics": current_profile_pics}
+    )
+
+
 def details(request, profilename):
+    """
+    Detail page for a single Twitter user
+    """
     username = TwitterUser.objects.get(username=profilename)
-    userPics = TwitterProfilePic.objects.filter(twitter_user = username).order_by('-created_at')
+    current_profile_pic = TwitterUserCurrentProfilePic.objects.get(
+        twitter_user=username
+    )
 
-    return render (request, "twitterbot/details.html", {
-        'profilepics': userPics
-    })
+    return render(
+        request, "twitterbot/details.html", {"profilepic": current_profile_pic}
+    )
