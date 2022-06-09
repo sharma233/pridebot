@@ -156,19 +156,25 @@ def scrape_profile_pics():
     bearer_token = os.environ.get("BEARER_TOKEN")
     client = tweepy.Client(bearer_token)
 
-    print(USERNAMES)
-    for username in USERNAMES:
-        user = client.get_user(username=username, user_fields="profile_image_url")
+    # print(USERNAMES)
+
+    # for username in USERNAMES:
+    for twitter_user in TwitterUser.objects.all():
+        user = client.get_user(
+            username=twitter_user.username, user_fields="profile_image_url"
+        )
         profile_pic_url = user[0].data["profile_image_url"]
         profile_pic = requests.get(profile_pic_url)
-        profile_pic_name = f"{username}_pp_{datetime.utcnow().isoformat()}.png"
+        profile_pic_name = (
+            f"{twitter_user.username}_pp_{datetime.utcnow().isoformat()}.png"
+        )
 
-        if image_already_latest(username, profile_pic_url):
-            print(f"not storing {username}")
+        if image_already_latest(twitter_user.username, profile_pic_url):
+            print(f"not storing {twitter_user.username}")
             # return
             continue
         else:
-            print(f"storing {username}")
+            print(f"storing {twitter_user.username}")
 
         # write the profile pic
         img_tmp = NamedTemporaryFile(delete=True)
@@ -177,10 +183,12 @@ def scrape_profile_pics():
         has_rainbow = check_image_contains_colours(
             profile_pic.content, RAINBOW_BOUNDARIES
         )
-        print(f"{username}'s profile pic likely contains rainbow: {has_rainbow}")
+        print(
+            f"{twitter_user.username}'s profile pic likely contains rainbow: {has_rainbow}"
+        )
 
         # store in db
-        user, _ = TwitterUser.objects.get_or_create(username=username)
+        user, _ = TwitterUser.objects.get_or_create(username=twitter_user.username)
         img_file = files.File(img_tmp, name=profile_pic_name)
         TwitterProfilePic.objects.create(
             twitter_user=user,
