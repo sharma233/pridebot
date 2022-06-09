@@ -22,19 +22,6 @@ RAINBOW_BOUNDARIES = [
     ([120, 50, 20], [135, 255, 255]),  # violet/purple
 ]
 
-USERNAMES = [
-    "exxonmobil",
-    "RogersHelps",
-    "Facebook",
-    "fbsecurity",
-    "SEGA",
-    "sonic_hedgehog",
-    "Xbox",
-    "Microsoft",
-    "Google",
-    "prideuser",
-]
-
 
 def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
     """
@@ -156,9 +143,8 @@ def scrape_profile_pics():
     bearer_token = os.environ.get("BEARER_TOKEN")
     client = tweepy.Client(bearer_token)
 
-    # print(USERNAMES)
-
-    # for username in USERNAMES:
+    # get all TwitterUsers from the db and pass their username
+    # to the Twitter API client to scrape their profile pic
     for twitter_user in TwitterUser.objects.all():
         user = client.get_user(
             username=twitter_user.username, user_fields="profile_image_url"
