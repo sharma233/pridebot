@@ -44,6 +44,14 @@ To start the development server (default is http://127.0.0.1:8000/), run
 
 ## Run the scrapper bot
 
+### Management Command Method
+
+Run the `scrape_profile_pics` management command
+
+`python manage.py scrape_profile_pics`
+
+### Shell Method
+
 Start a shell
 
 `python manage.py shell`
