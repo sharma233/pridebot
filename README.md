@@ -55,3 +55,11 @@ Import the util functions
 Run the scrape
 
 `scrape_profile_pics()`
+
+## Generate/Update fixtures for initial users
+
+`python manage.py dumpdata twitterbot.TwitterUser -o twitter_users.json`
+
+## Load fxitures for initial users
+
+`python manage.py loaddata twitter_users.json`
