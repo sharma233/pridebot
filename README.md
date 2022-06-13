@@ -44,6 +44,14 @@ To start the development server (default is http://127.0.0.1:8000/), run
 
 ## Run the scrapper bot
 
+### Management Command Method
+
+Run the `scrape_profile_pics` management command
+
+`python manage.py scrape_profile_pics`
+
+### Shell Method
+
 Start a shell
 
 `python manage.py shell`
@@ -55,3 +63,11 @@ Import the util functions
 Run the scrape
 
 `scrape_profile_pics()`
+
+## Generate/Update fixtures for initial users
+
+`python manage.py dumpdata twitterbot.TwitterUser -o twitter_users.json`
+
+## Load fxitures for initial users
+
+`python manage.py loaddata twitter_users.json`
