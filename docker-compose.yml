@@ -8,10 +8,5 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-    environment:
-      - DB_NAME=$DB_NAME
-      - DB_HOST=$DB_HOST
-      - DB_PORT=$DB_PORT
-      - DB_USERNAME=$DB_USERNAME
-      - DB_PASSWORD=$DB_PASSWORD
-      - BEARER_TOKEN=$BEARER_TOKEN
+    env_file:
+      - .env
