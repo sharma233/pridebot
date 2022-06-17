@@ -1,0 +1,15 @@
+{% extends "twitterbot/layout.html" %}
+{% load static %}
+
+{% block body %}
+<form method="POST">
+    {% csrf_token %}
+    {{ twitterform }}
+
+    <input type="submit" value="Add user to scrape list">
+</form>
+
+
+
+<script src="{% static 'twitterbot/webadmin.js' %}"></script>
+{% endblock %}
