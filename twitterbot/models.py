@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 
@@ -8,17 +9,22 @@ class TwitterUser(models.Model):
         Get the user's current stored profile picture
         """
 
-        current_profile_pic = TwitterUserCurrentProfilePic.objects.get(
-            twitter_user=self
-        ).current_profile_pic
+        try:
+            current_profile_pic = TwitterUserCurrentProfilePic.objects.get(
+                twitter_user=self
+            ).current_profile_pic
+        except ObjectDoesNotExist:
+            current_profile_pic = None
 
         if current_profile_pic:
             return current_profile_pic
 
         # if the user has a profile pic but no record in TwitterUserCurrentProfilePic
-        current_profile_pic = TwitterProfilePic.objects.filter(
-            twitter_user=self
-        ).order_by("-created_at")[0]
+        current_profile_pic = (
+            TwitterProfilePic.objects.filter(twitter_user=self)
+            .order_by("-created_at")
+            .first()
+        )
 
         if current_profile_pic:
             # create the entry for the next lookup
@@ -30,6 +36,12 @@ class TwitterUser(models.Model):
 
         # No profile pics found for the user
         return None
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __str__(self) -> str:
+        return self.username
 
     username = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
