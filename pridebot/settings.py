@@ -79,7 +79,7 @@ WSGI_APPLICATION = "pridebot.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# default the db_name so tests can run without configuration
+# default the db_name so tests can run without further configuration
 db_name = os.environ.get("DB_NAME", "pride_db")
 db_username = os.environ.get("DB_USERNAME")
 db_password = os.environ.get("DB_PASSWORD")
@@ -110,13 +110,15 @@ DATABASES = {
 
 
 # pytest mock db
-# if "pytest" in sys.argv[0]:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-#         },
-#     }
+# doing it this way so tests can run without
+# the db running
+if "pytest" in sys.argv[0]:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
