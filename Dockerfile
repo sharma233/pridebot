@@ -2,7 +2,7 @@
 FROM python:3.10.5-slim-buster
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-EXPOSE 80/tcp
+EXPOSE 8000/tcp
 WORKDIR /code
 COPY requirements.txt /code/
 RUN \
