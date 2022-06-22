@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -90,12 +91,13 @@ WSGI_APPLICATION = "pridebot.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-
-db_name = os.environ.get("DB_NAME")
+# default the db_name so tests can run without further configuration
+db_name = os.environ.get("DB_NAME", "pride_db")
 db_username = os.environ.get("DB_USERNAME")
 db_password = os.environ.get("DB_PASSWORD")
 db_host = os.environ.get("DB_HOST")
 db_port = os.environ.get("DB_PORT")
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -115,9 +117,20 @@ DATABASES = {
         "PASSWORD": db_password,
         "HOST": db_host,
         "PORT": db_port,
-    }
+    },
 }
 
+
+# pytest mock db
+# doing it this way so tests can run without
+# the db running
+if "pytest" in sys.argv[0]:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
