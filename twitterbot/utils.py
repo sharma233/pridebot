@@ -138,17 +138,28 @@ def image_already_latest(username, profile_pic_url):
     return images_are_the_same
 
 
-def scrape_profile_pics():
+def scrape_profile_pics(twitter_username=None):
     # build header with bearer token
     bearer_token = os.environ.get("BEARER_TOKEN")
     client = tweepy.Client(bearer_token)
 
+    if twitter_username:
+        twitter_users = TwitterUser.objects.filter(username=twitter_username)
+    else:
+        twitter_users = TwitterUser.objects.all()
+
     # get all TwitterUsers from the db and pass their username
     # to the Twitter API client to scrape their profile pic
-    for twitter_user in TwitterUser.objects.all():
+    for twitter_user in twitter_users:
         user = client.get_user(
             username=twitter_user.username, user_fields="profile_image_url"
         )
+
+        if not user[0]:
+            # user not found via Twitter API
+            # skip it!
+            continue
+
         profile_pic_url = user[0].data["profile_image_url"]
         profile_pic = requests.get(profile_pic_url)
         profile_pic_name = (
