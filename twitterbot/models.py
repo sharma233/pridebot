@@ -1,3 +1,7 @@
+import os
+
+import tweepy
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
@@ -71,3 +75,13 @@ class TwitterUserCurrentProfilePic(models.Model):
     current_profile_pic = models.ForeignKey(
         TwitterProfilePic, on_delete=models.CASCADE, null=True
     )
+
+
+class List(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    name = models.CharField(max_length=200)
+
+
+class ListTwitterUser(models.Model):
+    list = models.ForeignKey(List, on_delete=models.CASCADE, null=False)
+    twitter_user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE, null=False)
