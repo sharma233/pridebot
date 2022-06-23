@@ -1,3 +1,6 @@
+import os
+
+import tweepy
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
@@ -42,6 +45,15 @@ class TwitterUser(models.Model):
 
     def __str__(self) -> str:
         return self.username
+
+    def save(self, *args, **kwargs):
+        bearer_token = os.environ.get("BEARER_TOKEN")
+        client = tweepy.Client(bearer_token)
+        user = client.get_user(username=self.username)
+        if user.data == None and len(user.errors) > 0:
+            raise Exception("Could not find user on Twitter")
+        else:
+            super().save(*args, **kwargs)
 
     username = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
