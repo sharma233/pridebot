@@ -7,6 +7,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("profile/<str:profilename>", views.details, name="details"),
+    path("add/", views.webadmin, name="webadmin")
 ]
 
 

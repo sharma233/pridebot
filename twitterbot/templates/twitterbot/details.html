@@ -3,20 +3,19 @@
 
 {% block body %}
 
-    {% with profilepic as profilepic %}
         <button class="profilebutton">Go to profile</button>
         <button class="indexbutton">Go back to index</button>
-    {% endwith %}
 
+{% for obj in profilepic %}
     <div class="pridebox">
-        {% with profilepic.current_profile_pic.image as localpath %}
+        {% with obj.image as localpath %}
             <img src="{% get_media_prefix %}{{ localpath }}">
         {% endwith %}
         <br>
         User: <span class='twittername'>{{ profilepic.twitter_user.username }}</span>
         <br>
         Pride icon:
-        {% with profilepic.current_profile_pic.has_rainbow as has_rainbow %}
+        {% with obj.has_rainbow as has_rainbow %}
             {% if has_rainbow %}
                 Yes
             {% else %}
@@ -24,8 +23,8 @@
             {% endif %}
         {% endwith %}
         <br>
-        Scraped on: {{ profilepic.current_profile_pic.created_at }}
+        Scraped on: {{ obj.created_at }}
     </div>
-
+{% endfor %}
     <script src="{% static 'twitterbot/pride-drilldown.js' %}"></script>
 {% endblock %}
